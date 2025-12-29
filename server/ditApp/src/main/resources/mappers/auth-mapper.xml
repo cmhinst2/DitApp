@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dit.app.api.model.mapper.AuthMapper">
+	
+	<!-- 회원가입 여부 확인 -->
+	<select id="selectMember">
+		SELECT COUNT(*) FROM "MEMBER"
+		WHERE MEMBER_EMAIL = #{memberEmail}
+	</select>
+	
+	<!-- 카카오 회원가입 -->
+	<insert id="insertKakaoMember">
+		INSERT INTO "MEMBER" VALUES(SEQ_MEMBER_NO.NEXTVAL,
+		#{memberEmail}, #{memberPw}, #{memberName},
+		#{loginType}, #{memberProfile}, #{accessToken}, #{refreshToken})
+	</insert>
+
+	<!-- 카카오 회원 조회(로그인) -->
+	<select id="kakaoLogin">
+		SELECT MEMBER_NO, MEMBER_EMAIL, MEMBER_NAME,
+		LOGIN_TYPE, MEMBER_PROFILE
+		FROM "MEMBER"
+		WHERE MEMBER_EMAIL = #{memberEmail}
+	</select>
+
+	<!-- 카카오 회원 로그인(액세스/리프레시 업뎃) -->
+	<update id="updateKakaoMemberToken">
+		UPDATE "MEMBER" SET
+		ACCESS_TOKEN = #{accessToken},
+		REFRESH_TOKEN = #{refreshToken}
+		WHERE MEMBER_EMAIL = #{memberEmail}
+	</update>
+	
+	<!-- 카카오 회원 AccessToken 조회 -->
+	<select id="getAccessToken">
+		SELECT ACCESS_TOKEN FROM "MEMBER"
+		WHERE MEMBER_EMAIL = #{memberEmail}
+	</select>
+
+	<!-- 카카오 회원 로그아웃 -->
+	<update id="kakaoLogout">
+		UPDATE "MEMBER" SET
+		ACCESS_TOKEN = NULL, 
+		REFRESH_TOKEN = NULL
+		WHERE MEMBER_EMAIL = #{memberEmail}
+	</update>
+
+
+
+</mapper>
