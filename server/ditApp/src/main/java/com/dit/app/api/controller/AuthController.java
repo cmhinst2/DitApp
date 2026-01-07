@@ -44,7 +44,7 @@ public class AuthController {
 					.httpOnly(true) // JS에서 접근 불가 (XSS 방지)
 					.secure(true)
 					.path("/")
-					.maxAge(60) // 1시간
+					.maxAge(3600) // 1시간
 					.sameSite("Strict")
 					.build();
 		}
@@ -76,7 +76,7 @@ public class AuthController {
 	            .block(); 
 				
 			} catch (HttpClientErrorException.Unauthorized e) { // 토큰 만료 시 401에러
-				log.debug("[만료된 토큰] 카카오 세션 종료: {}", memberEmail);
+				log.error("[만료된 토큰] 카카오 세션 종료: {}", memberEmail);
 			} catch (Exception e) {
 				log.error("카카오 API 호출 중 오류 발생: {}", e.getMessage());
 			}

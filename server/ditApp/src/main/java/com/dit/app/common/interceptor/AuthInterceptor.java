@@ -39,7 +39,6 @@ public class AuthInterceptor implements HandlerInterceptor {
 		}
 
 		if (token == null || !isValid(token)) {
-			log.debug("와쓰까");
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 에러 전송
 			return false; // 컨트롤러로 요청을 보내지 않음
 		}

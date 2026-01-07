@@ -7,6 +7,9 @@ function App() {
   // 로그인 상태
   const [isLogin, setIsLogin] = useState(JSON.parse(localStorage.getItem("loginMember")));
 
+  // 화면 로딩 상태
+  const [isLoading, setIsLoading] = useState(true);
+
   // 첫 렌더링인지 확인 (StrictMode의 두번 호출 방지)
   const isFirstRender = useRef(true);
   // useRef - 값이 변해도 리렌더링 X
@@ -33,10 +36,12 @@ function App() {
 
     if (isFirstRender.current) {
       isFirstRender.current = false;
-      checkAuth();
+      checkAuth().finally(() => setIsLoading(false));
     }
 
   }, []);
+
+  if (isLoading) return null; // 리렌더링 시 깜빡임 방지
 
   return (
     <BrowserRouter>

@@ -13,8 +13,7 @@ export default function LoginPage() {
   const handleKakaoLogin = () => {
     let kakaoUrl = KAKAO_AUTH_URL;
     const lastLogout = localStorage.getItem("lastLogoutTime");
-    //const ONE_HOUR = 60 * 60 * 1000;  // 1시간 
-    const ONE_HOUR = 60 * 1000;  // 1시간 
+    const ONE_HOUR = 60 * 60 * 1000;  // 1시간 
   
     if (lastLogout && (Date.now() - parseInt(lastLogout) > ONE_HOUR)) {
       // 로그아웃 한지 1시간이 지났다면 강제로 ID/PW를 입력하게 함
