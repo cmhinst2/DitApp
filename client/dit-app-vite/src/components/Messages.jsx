@@ -4,7 +4,7 @@ export default function Message({ role, content }) {
   return (
     <div className={`flex ${isAI ? "justify-start" : "justify-end"}`}>
       <div
-        className={`max-w-[70%] p-4 rounded-xl text-sm leading-relaxed
+        className={`whitespace-pre-wrap break-words max-w-[70%] p-4 rounded-xl text-sm leading-relaxed
           ${
             isAI
               ? "bg-blue-50 text-slate-800"
