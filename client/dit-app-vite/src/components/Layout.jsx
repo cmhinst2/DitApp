@@ -11,7 +11,7 @@ import ReviewPage from "../pages/ReviewPage";
 export default function Layout({isLogin, setIsLogin}) {
 
   return (
-    <>
+    <div className="flex flex-col h-screen">
       <Header />
 
       <Routes>
@@ -24,9 +24,9 @@ export default function Layout({isLogin, setIsLogin}) {
           <Route
             path="/*"
             element={
-              <div className="flex min-h-screen w-full">
+              <div className="flex w-full flex-1 overflow-y-auto">
                 <Sidebar setIsLogin={setIsLogin} />
-                <main className="basis-5/6 pt-20 px-8  min-h-screen bg-slate-50">
+                <main className="basis-5/6 px-8 bg-slate-50 pt-[4rem] h-full">
                   <Routes>
                     <Route path="/" element={<Main />} />
                     <Route path="/trends" element={<TrendPage />} />
@@ -47,6 +47,6 @@ export default function Layout({isLogin, setIsLogin}) {
       </Routes>
 
       <Footer />
-    </>
+    </div>
   );
 }

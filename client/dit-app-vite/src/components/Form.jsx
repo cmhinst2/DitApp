@@ -77,7 +77,7 @@ export function Sidebar({ setIsLogin }) {
   }
 
   return (
-    <aside className="flex flex-col h-screen basis-1/6 justify-between w-64 bg-slate-50 border-r border-slate-200 pt-20 pb-10 px-4 h-full">
+    <aside className="flex flex-col basis-1/6 justify-between w-64 bg-slate-50 border-r border-slate-200 pt-20 pb-10 px-4">
       <ul className="space-y-4 text-slate-600">
         <li className="font-semibold text-slate-800">메뉴</li>
         <div className="m-2">
@@ -135,7 +135,7 @@ export function Sidebar({ setIsLogin }) {
 // 푸터
 export function Footer() {
   return (
-    <footer className="w-full h-14 bg-white border-t border-slate-200 flex items-center justify-center text-sm text-slate-500">
+    <footer className="w-full h-[3.5rem] bg-white border-t border-slate-200 flex items-center justify-center text-sm text-slate-500">
       © 2025 Dit. All rights reserved.
     </footer>
   );

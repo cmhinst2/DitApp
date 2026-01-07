@@ -14,7 +14,7 @@ export default function Message({ role, content }) {
       >
         {isAI && (
           <p className="mb-1 text-xs text-blue-600 font-semibold">
-            AI 면접관
+            면접관 [조코더]
           </p>
         )}
         {content}

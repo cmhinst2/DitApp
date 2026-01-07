@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import Message from "../components/Messages";
 import axiosAPI from "../api/axiosInterceptor";
+import { Spinner } from "../components/Assets";
 
 const POSITION_LABEL = {
   frontend: "프론트엔드 개발자",
@@ -14,7 +15,8 @@ export default function InterviewPage() {
   const [selectedPosition, setSelectedPosition] = useState(null); // 포지션 role
   const [messages, setMessages] = useState([]); // 인터뷰 대화 메시지 저장 배열
   const [input, setInput] = useState(""); // 현재 작성한 input 값
-  const [isLoading, setIsLoading] = useState(false); // 메세지 전송중 로딩
+  const [isSending, setIsSending] = useState(false); // 메세지 전송중 로딩
+  const [isLoading, setIsLoading] = useState(true); // 화면 렌더링을 위한 로더
   const bottomRef = useRef(null);
 
   // 챗 화면 스크롤 하단 고정 
@@ -31,11 +33,24 @@ export default function InterviewPage() {
 
   //진행 세션 여부 확인
   useEffect(() => {
-    const savedSessionId = JSON.parse(localStorage.getItem("interviewSession"));
+    const checkSession = async () => {
+      try {
+        const savedSessionId = JSON.parse(localStorage.getItem("interviewSession"));
 
-    if (savedSessionId) {
-      loadInterview(savedSessionId.currentSessionId);
+        if (savedSessionId && savedSessionId.currentSessionId) {
+          await loadInterview(savedSessionId.currentSessionId);
+        } else {
+          setSelectedPosition(null);
+          setSessionId(null);
+        }
+      } catch (error) {
+        console.error("면접 세션 로드 실패: ", error);
+      } finally {
+        setIsLoading(false);
+      }
     }
+
+    checkSession();
   }, []);
 
   // 종료되지 않은 기존 면접 이어서 하기
@@ -65,6 +80,7 @@ export default function InterviewPage() {
 
   // 인터뷰 시작 - 포지션 정하기부터
   const startInterview = async (selectRole) => {
+    setIsLoading(true);
 
     try {
       const member = JSON.parse(localStorage.getItem("loginMember"));
@@ -89,7 +105,10 @@ export default function InterviewPage() {
       setIsStarted(true);
 
     } catch (error) {
-      console.error("Error sending message:", error);
+      console.error("인터뷰 시작 메시지 전송 중 에러 :", error);
+
+    } finally {
+      setIsLoading(false);
     }
 
   };
@@ -97,7 +116,7 @@ export default function InterviewPage() {
   // 인터뷰 진행 - 메세지 보내기
   const handleSend = async () => {
     if (!input.trim()) return;
-    setIsLoading(true);
+    setIsSending(true);
 
     setMessages((prev) => [
       ...prev,
@@ -139,7 +158,7 @@ export default function InterviewPage() {
       console.error("인터뷰 진행 중 에러 발생:", error);
 
     } finally {
-      setIsLoading(false);
+      setIsSending(false);
     }
 
   };
@@ -159,9 +178,13 @@ export default function InterviewPage() {
     location.href = "/interview";
   }
 
-  /* 직무 선택 화면 */
-  if (!selectedPosition || !sessionId) {
-    return (
+  // 면접 세션 여부 확인 모두 끝난 후 렌더링 결정
+  if (isLoading) {
+    return <Spinner />;
+  }
+
+  return !selectedPosition || !sessionId ?
+    ( // 직무 선택 화면
       <section className="max-w-3xl mx-auto pt-32 text-center">
         <h2 className="text-2xl font-bold mb-4">
           지원 직무를 선택하세요
@@ -184,48 +207,41 @@ export default function InterviewPage() {
           ))}
         </div>
       </section>
+    ) : ( // 인터뷰 화면
+      <section className="mt-5 max-w-4xl mx-auto h-[calc(100vh-160px)] flex flex-col">
+        <h2 className="text-lg font-semibold mb-4 text-slate-700">
+          AI 모의면접 · {POSITION_LABEL[selectedPosition]}
+        </h2>
+
+        <div ref={bottomRef} className="flex-1 overflow-y-auto space-y-4 p-4 bg-white rounded-xl border">
+          {messages.map((msg, idx) => (
+            <Message key={idx} role={msg.role} content={msg.content} />
+          ))}
+
+          {!isStarted && <button onClick={handleRestart}
+            className="p-3 text-lg items-center justify-center w-full flex border rounded-lg text-white bg-blue-600 hover:bg-blue-700">재시작</button>}
+        </div>
+
+        <div className="mt-4 flex gap-2">
+          <textarea
+            disabled={isStarted ? false : true}
+            className="flex-1 resize-none border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            rows={2}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder={isStarted ? "답변을 입력하세요. 만약 종료를 원하면 '면접 종료'를 입력하세요." :
+              "면접이 종료되었습니다. 새로운 시작을 원하시면 재시작 버튼을 눌러주세요"
+            }
+          />
+          <button
+            onClick={handleSend} disabled={!isStarted || isSending}
+            className={`px-6 text-white rounded-lg ${(!isStarted || isSending) ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'
+              }`}
+          >
+            {isSending ? '전송 중...' : '전송'}
+          </button>
+        </div>
+      </section>
     );
-  }
-
-  /* 대화형 면접 화면 */
-  return (
-    <section className="max-w-4xl mx-auto h-[calc(100vh-160px)] flex flex-col">
-      <h2 className="text-lg font-semibold mb-4 text-slate-700">
-        AI 모의면접 · {POSITION_LABEL[selectedPosition]}
-      </h2>
-
-      {/* 채팅 영역 */}
-      <div ref={bottomRef} className="flex-1 overflow-y-auto space-y-4 p-4 bg-white rounded-xl border">
-        {messages.map((msg, idx) => (
-          <Message key={idx} role={msg.role} content={msg.content} />
-        ))}
-        
-        {/* 재시작 버튼 */}
-        {!isStarted && <button onClick={handleRestart}
-        className="p-3 text-lg items-center justify-center w-full flex border rounded-lg text-white bg-blue-600 hover:bg-blue-700">재시작</button>}
-      </div>
-      
-      {/* 입력 영역 */}
-      <div className="mt-4 flex gap-2">
-        <textarea
-          disabled={isStarted ? false : true}
-          className="flex-1 resize-none border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          rows={2}
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder={isStarted ? "답변을 입력하세요. 만약 종료를 원하면 '면접 종료'를 입력하세요." :
-            "면접이 종료되었습니다. 새로운 시작을 원하시면 재시작 버튼을 눌러주세요"
-          }
-        />
-        <button
-          onClick={handleSend} disabled={!isStarted || isLoading}
-          className={`px-6 text-white rounded-lg ${(!isStarted || isLoading) ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'
-            }`}
-        >
-          {isLoading ? '전송 중...' : '전송'}
-        </button>
-      </div>
-    </section>
-  );
 }
