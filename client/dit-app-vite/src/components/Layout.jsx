@@ -26,9 +26,9 @@ export default function Layout() {
           <Route
             path="/*"
             element={
-              <div className="flex min-h-screen">
+              <div className="flex min-h-screen w-full">
                 <Sidebar setIsLogin={setIsLogin} />
-                <main className="pt-20 px-8 w-full min-h-screen bg-slate-50">
+                <main className="basis-5/6 pt-20 px-8  min-h-screen bg-slate-50">
                   <Routes>
                     <Route path="/" element={<Main />} />
                     <Route path="/trends" element={<TrendPage />} />

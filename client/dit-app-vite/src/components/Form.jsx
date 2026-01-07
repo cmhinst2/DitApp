@@ -77,7 +77,7 @@ export function Sidebar({ setIsLogin }) {
   }
 
   return (
-    <aside className="flex flex-col justify-between w-64 bg-slate-50 border-r border-slate-200 pt-20 pb-10 px-4 fixed left-0 top-0 h-full">
+    <aside className="flex flex-col h-screen basis-1/6 justify-between w-64 bg-slate-50 border-r border-slate-200 pt-20 pb-10 px-4 h-full">
       <ul className="space-y-4 text-slate-600">
         <li className="font-semibold text-slate-800">메뉴</li>
         <div className="m-2">
@@ -120,11 +120,10 @@ export function Sidebar({ setIsLogin }) {
           </NavLink>
         </div>
       </ul>
-      
-      <ul>
+      {/* <ul>
         <li onClick={axiosTest}
           className="">테스트</li>
-      </ul>
+      </ul> */}
       <ul>
         <li onClick={handleLogout}
           className="text-slate-800 cursor-pointer text-center hover:text-blue-600 hover:underline">로그아웃</li>

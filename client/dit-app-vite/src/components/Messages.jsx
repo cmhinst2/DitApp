@@ -1,5 +1,5 @@
 export default function Message({ role, content }) {
-  const isAI = role === "ai";
+  const isAI = role === "AI";
 
   return (
     <div className={`flex ${isAI ? "justify-start" : "justify-end"}`}>
