@@ -1,19 +1,14 @@
 package com.dit.app.api.controller;
 
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.dit.app.api.model.dto.Member;
@@ -30,7 +25,14 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthController {
 
 	private final AuthService authService;
+	
+	// 첫 접속 시 로그인 상태(accessToken 유효 여부) 확인
+	@GetMapping("me")
+	public ResponseEntity<String> checkAuth() {
+		return ResponseEntity.ok("로그인 상태 유효함");
+	}
 
+	// 카카오 로그인
 	@PostMapping("kakao/login")
 	public ResponseEntity<Member> kakaoLogin(@RequestBody Member member) {
 
@@ -42,7 +44,7 @@ public class AuthController {
 					.httpOnly(true) // JS에서 접근 불가 (XSS 방지)
 					.secure(true)
 					.path("/")
-					.maxAge(3600)
+					.maxAge(60) // 1시간
 					.sameSite("Strict")
 					.build();
 		}

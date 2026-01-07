@@ -8,7 +8,6 @@ const axiosAPI = axios.create({
 axiosAPI.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.log("axios 인터셉터 동작함!!!")
     // 서버가 쿠키 만료로 인해 401 에러를 보냈을 때만 작동
     if (error.response && error.response.status === 401) {
       alert("세션이 만료되었습니다. 다시 로그인해주세요.");

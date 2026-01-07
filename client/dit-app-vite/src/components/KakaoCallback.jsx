@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosAPI from "../api/axiosInterceptor.js";
 import axios from "axios";
@@ -8,12 +8,14 @@ const REDIRECT_URI = import.meta.env.VITE_KAKAO_REDIRECT_URI;
 
 export default function KakaoCallback({ setIsLogin }) {
   const navigate = useNavigate();
+  const isProcessed = useRef(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code"); // 발급받은 인가코드 얻어오기
 
-    if (code) {
+    if (code && !isProcessed.current) {
+      isProcessed.current = true;
       sendOauthToken(code);
     }
   }, []);

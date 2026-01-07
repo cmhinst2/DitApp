@@ -1,16 +1,14 @@
-import { useState } from "react";
 import { Header, Footer, Sidebar } from "../components/Form";
 import LoginPage from "../pages/LoginPage";
 import { Routes, Route, Navigate } from "react-router-dom";
 import TrendPage from "../pages/TrendPage";
 import InterviewPage from "../pages/InterviewPage";
 import KakaoCallback from "./KakaoCallback";
-import Main from "../pages/Main";
+import Main from "../pages/MainPage";
 import ReviewPage from "../pages/ReviewPage";
 
 
-export default function Layout() {
-  const [isLogin, setIsLogin] = useState(JSON.parse(localStorage.getItem("loginMember")));
+export default function Layout({isLogin, setIsLogin}) {
 
   return (
     <>

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-export default function Main() {
+export default function MainPage() {
 
   return (
     <section className="max-w-3xl mx-auto pt-32 text-center flex flex-col">
