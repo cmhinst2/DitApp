@@ -11,11 +11,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dit.app.ai.model.dto.InterviewMessage;
 import com.dit.app.ai.model.dto.InterviewSessions;
 import com.dit.app.ai.model.service.AiService;
+import com.dit.app.ai.model.service.InterviewService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,14 +25,15 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:5173")
-@RequestMapping("ai")
+@RequestMapping("ai/interview")
 @Slf4j
-public class AiController {
+public class InterviewController {
 
 	private final AiService aiService;
+	private final InterviewService interviewService;
 
 	// 면접 시작(포지션 세팅)
-	@PostMapping("interview/position")
+	@PostMapping("position")
 	public InterviewMessage selectPosition(@RequestBody InterviewSessions interviewSessions) throws Exception {
 		// memberNo, position 세팅 중
 		String sessionId = UUID.randomUUID().toString(); // 시작할때마다 세션 새로 만듦
@@ -41,16 +44,23 @@ public class AiController {
 	}
 
 	// 인터뷰 진행
-	@PostMapping("interview/continue")
+	@PostMapping("continue")
 	public InterviewMessage continueInterview(@RequestBody InterviewMessage interviewMessage) throws Exception {
-			return aiService.continueInterview(interviewMessage);
+		return aiService.continueInterview(interviewMessage);
 	}
 
 	// 기존 인터뷰 불러오기
-	@GetMapping("interview/history/{sessionId}")
+	@GetMapping("load/{sessionId}")
 	public List<InterviewMessage> loadInterviewHistory(@PathVariable("sessionId") String sessionId) {
 		// {sessionId : '', content: '', role : ''} 형태 List로 반환
-		return aiService.loadInterviewHistory(sessionId);
+		return interviewService.loadInterview(sessionId);
+	}
+
+	// 지난 인터뷰 기록 모두 조회
+	@GetMapping("history/{memberNo}")
+	public List<InterviewSessions> selectAllInterviewHistory(@PathVariable("memberNo") String memberNo,
+			@RequestParam Map<String, Object> paramMap) {
+		return interviewService.selectInterviewHistory(memberNo, paramMap);
 	}
 
 }

@@ -1,0 +1,7 @@
+export const ReviewHistory = () => {
+  return (
+    <section className="max-w-3xl mx-auto pt-32 text-center">
+      <h2 className="text-2xl font-bold mb-4">리뷰히스토리</h2>
+    </section>
+  )
+}

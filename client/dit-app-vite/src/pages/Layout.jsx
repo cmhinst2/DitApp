@@ -1,11 +1,13 @@
 import { Header, Footer, Sidebar } from "../components/Form";
-import LoginPage from "../pages/LoginPage";
+import LoginPage from "./LoginPage";
 import { Routes, Route, Navigate } from "react-router-dom";
-import TrendPage from "../pages/TrendPage";
-import InterviewPage from "../pages/InterviewPage";
-import KakaoCallback from "./KakaoCallback";
-import Main from "../pages/MainPage";
-import ReviewPage from "../pages/ReviewPage";
+import TrendPage from "./TrendPage";
+import InterviewPage from "./InterviewPage";
+import KakaoCallback from "../components/KakaoCallback";
+import Main from "./MainPage";
+import ReviewPage from "./ReviewPage";
+import { InterviewHistory } from "./InterviewHistoryPage";
+import { ReviewHistory } from "./ReviewHistoryPage";
 
 
 export default function Layout({isLogin, setIsLogin}) {
@@ -24,14 +26,16 @@ export default function Layout({isLogin, setIsLogin}) {
           <Route
             path="/*"
             element={
-              <div className="flex w-full flex-1 overflow-y-auto">
+              <div className="flex w-full flex-1 overflow-y-auto bg-slate-50">
                 <Sidebar setIsLogin={setIsLogin} />
-                <main className="basis-5/6 px-8 bg-slate-50 pt-[4rem] h-full">
+                <main className="basis-5/6 px-8 h-full">
                   <Routes>
                     <Route path="/" element={<Main />} />
                     <Route path="/trends" element={<TrendPage />} />
                     <Route path="/interview" element={<InterviewPage />} />
-                    <Route path="/codereview" element={<ReviewPage />} />
+                    <Route path="/review" element={<ReviewPage />} />
+                    <Route path="/interview/history" element={<InterviewHistory />} />
+                    <Route path="/review/history" element={<ReviewHistory />} />
                   </Routes>
                 </main>
               </div>

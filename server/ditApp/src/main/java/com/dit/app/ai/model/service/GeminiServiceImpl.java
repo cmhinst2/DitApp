@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StreamUtils;
 
 import com.dit.app.ai.model.dto.InterviewMessage;
@@ -26,6 +27,7 @@ import com.dit.app.ai.model.mapper.InterviewMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+@Transactional(rollbackFor = Exception.class)
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -33,6 +35,7 @@ public class GeminiServiceImpl implements AiService{
 
 	private final ChatModel chatModel;
 	private final InterviewMapper interviewMapper;
+	private final InterviewService interviewService;
 	
 	@Autowired
     private ResourceLoader resourceLoader;
@@ -162,11 +165,7 @@ public class GeminiServiceImpl implements AiService{
 		return interviewMapper.completeInterviewSession(memberSessionId);
 	}
 
-	// 이전 면접 대화 불러오기
-	@Override
-	public List<InterviewMessage> loadInterviewHistory(String sessionId) {
-		return interviewMapper.selectAllMessageBySessionId(sessionId);
-	}
+	
 
 	// DB에 메시지 저장 
 	private void saveMessage(String sessionId, Message message, boolean isFirst) {
@@ -194,7 +193,7 @@ public class GeminiServiceImpl implements AiService{
 	// 이전 인터뷰 내용 DB에서 로드 후 AI Message타입으로 변환
 	private List<Message> convertToAiMessages(String sessionId) {
 	    // DB에서 해당 세션의 모든 메시지를 가져옴
-	    List<InterviewMessage> dbMessages = loadInterviewHistory(sessionId);
+	    List<InterviewMessage> dbMessages = interviewService.loadInterview(sessionId);
 	    if(dbMessages.isEmpty()) return null;
 	    
 	    // AI에게 전달할 Message 리스트 생성

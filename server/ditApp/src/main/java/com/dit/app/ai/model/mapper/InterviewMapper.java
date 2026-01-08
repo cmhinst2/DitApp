@@ -1,6 +1,7 @@
 package com.dit.app.ai.model.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -17,5 +18,7 @@ public interface InterviewMapper {
 	List<InterviewMessage> selectAllMessageBySessionId(String sessionId);
 
 	int completeInterviewSession(String memberSessionId);
+
+	List<InterviewSessions> selectInterviewHistory(Map<String, Object> params);
 	
 }

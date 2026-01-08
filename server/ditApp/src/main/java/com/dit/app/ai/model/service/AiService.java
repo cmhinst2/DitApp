@@ -22,11 +22,5 @@ public interface AiService {
 	 */
 	InterviewMessage continueInterview(InterviewMessage interviewMessage) throws Exception ;
 
-	/** 이전 면접 대화 불러오기
-	 * @param sessionId
-	 * @return
-	 */
-	List<InterviewMessage> loadInterviewHistory(String sessionId);
-
 
 }

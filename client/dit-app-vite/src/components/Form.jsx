@@ -7,7 +7,7 @@ export function Header() {
   const loginMember = JSON.parse(localStorage.getItem("loginMember"));
 
   return (
-    <header className="fixed top-0 left-0 w-full h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 z-50">
+    <header className="top-0 left-0 w-full h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 z-50">
       <Link to="/">
         <h1 className="title text-xl font-semibold text-blue-600">Dit (Do it)</h1>
       </Link>
@@ -62,69 +62,22 @@ export function Sidebar({ setIsLogin }) {
     }
   }
 
-  const axiosTest = async() => {
-    try {
-      const resp = await axiosAPI.get("/api/auth/test");
-
-      if (resp.data == 0) {
-        alert("axios 테스트")
-        return;
-      }
-
-    } catch (error) {
-      console.error("axios 인터셉터 테스트중 예외발생",error);
-    } 
-  }
-
   return (
-    <aside className="flex flex-col basis-1/6 justify-between w-64 bg-slate-50 border-r border-slate-200 pt-20 pb-10 px-4">
-      <ul className="space-y-4 text-slate-600">
+    <aside className="sticky top-0 flex flex-col basis-1/6 w-64 bg-slate-50 border-r border-slate-200 pt-10 pb-10 px-4">
+      <ul className="space-y-4 text-slate-600 border-b pb-5 mb-5">
         <li className="font-semibold text-slate-800">메뉴</li>
-        <div className="m-2">
-          <NavLink
-            to="/trends"
-            className={({ isActive }) =>
-              `inline-block px-4 py-2 transition-all duration-200 rounded-md ${isActive
-                ? "text-blue-600 bg-blue-100 font-bold flex"
-                : "text-gray-700 hover:text-white hover:bg-blue-500 flex"
-              }`
-            }
-          >
-            개발 트렌드
-          </NavLink>
-        </div>
-        <div className="m-2">
-          <NavLink
-            to="/interview"
-            className={({ isActive }) =>
-              `inline-block px-4 py-2 transition-all duration-200 rounded-md ${isActive
-                ? "text-blue-600 bg-blue-100 font-bold flex"
-                : "text-gray-700 hover:text-white hover:bg-blue-500 flex"
-              }`
-            }
-          >
-            AI 모의면접
-          </NavLink>
-        </div>
-        <div className="m-2">
-          <NavLink
-            to="/codereview"
-            className={({ isActive }) =>
-              `inline-block px-4 py-2 transition-all duration-200 rounded-md ${isActive
-                ? "text-blue-600 bg-blue-100 font-bold flex"
-                : "text-gray-700 hover:text-white hover:bg-blue-500 flex"
-              }`
-            }
-          >
-            AI 코드리뷰
-          </NavLink>
-        </div>
+        <SideMenu path={"/trends"} title={"개발 트렌드"} />
+        <SideMenu path={"/interview"} title={"AI 모의면접"} />
+        <SideMenu path={"/review"} title={"AI 코드리뷰"} />
       </ul>
-      {/* <ul>
-        <li onClick={axiosTest}
-          className="">테스트</li>
-      </ul> */}
-      <ul>
+
+      <ul className="space-y-4 text-slate-600 border-b pb-5 mb-5">
+        <li className="font-semibold text-slate-800">내 메뉴</li>
+        <SideMenu path={"/interview/history"} title={"내 모의면접 기록"} />
+        <SideMenu path={"/review/history"} title={"내 코드리뷰 기록"} />
+      </ul>
+      
+      <ul className="mt-auto">
         <li onClick={handleLogout}
           className="text-slate-800 cursor-pointer text-center hover:text-blue-600 hover:underline">로그아웃</li>
       </ul>
@@ -139,4 +92,24 @@ export function Footer() {
       © 2025 Dit. All rights reserved.
     </footer>
   );
+}
+
+// 사이드 메뉴
+const SideMenu = ({path, title}) => {
+  return (
+    <div className="m-2">
+      <NavLink
+        to={path}
+        end
+        className={({ isActive }) =>
+          `inline-block px-4 py-2 transition-all duration-200 rounded-md ${isActive
+            ? "text-blue-600 bg-blue-100 font-bold flex"
+            : "text-gray-700 hover:text-white hover:bg-blue-500 flex"
+          }`
+        }
+      >
+        {title}
+      </NavLink>
+    </div>
+  )
 }

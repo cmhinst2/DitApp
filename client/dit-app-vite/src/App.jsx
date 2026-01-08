@@ -1,5 +1,5 @@
-import { BrowserRouter, Route } from 'react-router-dom'
-import Layout from './components/Layout'
+import { BrowserRouter } from 'react-router-dom'
+import Layout from './pages/Layout'
 import { useEffect, useRef, useState } from 'react'
 import axios from 'axios';
 

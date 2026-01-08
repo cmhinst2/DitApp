@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import Message from "../components/Messages";
 import axiosAPI from "../api/axiosInterceptor";
-import { Spinner } from "../components/Assets";
+import { InterviewSpinner } from "../components/Assets";
 
 const POSITION_LABEL = {
   frontend: "프론트엔드 개발자",
@@ -56,7 +56,7 @@ export default function InterviewPage() {
   // 종료되지 않은 기존 면접 이어서 하기
   const loadInterview = async (id) => {
     try {
-      const response = await axiosAPI.get(`/ai/interview/history/${id}`);
+      const response = await axiosAPI.get(`/ai/interview/load/${id}`);
       const localData = JSON.parse(localStorage.getItem("interviewSession"));
       if (response.data && response.data.length > 0) { // 세션에서 인터뷰한 이력이 있음
         setSessionId(id); // 현재 세션 세팅
@@ -126,7 +126,6 @@ export default function InterviewPage() {
     setInput("");
 
     try {
-      console.log(sessionId);
       const res = await axiosAPI.post('/ai/interview/continue',
         {
           sessionId: sessionId,
@@ -134,7 +133,6 @@ export default function InterviewPage() {
         }
       );
 
-      console.log("재응답 : ", res);
       const { role, content, terminated } = res.data;
 
       // 인터뷰 종료
@@ -179,9 +177,7 @@ export default function InterviewPage() {
   }
 
   // 면접 세션 여부 확인 모두 끝난 후 렌더링 결정
-  if (isLoading) {
-    return <Spinner />;
-  }
+  if (isLoading) return <InterviewSpinner />;
 
   return !selectedPosition || !sessionId ?
     ( // 직무 선택 화면
@@ -217,6 +213,8 @@ export default function InterviewPage() {
           {messages.map((msg, idx) => (
             <Message key={idx} role={msg.role} content={msg.content} />
           ))}
+          {/* AI 답변 대기 중일 때만 보여줌 */}
+          {isSending && <TypingIndicator />}
 
           {!isStarted && <button onClick={handleRestart}
             className="p-3 text-lg items-center justify-center w-full flex border rounded-lg text-white bg-blue-600 hover:bg-blue-700">재시작</button>}
@@ -245,3 +243,14 @@ export default function InterviewPage() {
       </section>
     );
 }
+
+// AI 타이핑 스피너
+const TypingIndicator = () => (
+  <div className="flex items-start mb-4 ml-2">
+    <div className="bg-slate-100 rounded-2xl px-4 py-3 flex space-x-1">
+      <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+      <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+      <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></span>
+    </div>
+  </div>
+);

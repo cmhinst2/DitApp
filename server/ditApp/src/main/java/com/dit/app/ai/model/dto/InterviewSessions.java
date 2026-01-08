@@ -13,6 +13,8 @@ public class InterviewSessions {
 	private String sessionId;
 	private String position;
 	private String status;
-	private String createAt;
+	private String createdAt;
 	private int memberNo;
+	
+	private String lastMessage;
 }
