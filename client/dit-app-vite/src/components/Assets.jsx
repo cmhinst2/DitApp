@@ -72,7 +72,7 @@ export const MoreLoader = () => {
 // 뱃지
 export const Badge = ({title, color}) => (
   <div className={`ml-auto flex items-center gap-2 px-3 py-1.5 bg-${color}-50 text-${color}-700 border border-${color}-200 rounded-full`}>
-    <span className={`w-2 h-2 bg-${color}-500 rounded-full animate-pulse`}></span>
+    <span className={title === '종료' ? `w-2 h-2 bg-${color}-500 rounded-full` : `w-2 h-2 bg-${color}-500 rounded-full animate-bounce`}></span>
     <span className="text-xs font-bold">{title}</span>
   </div>
 );

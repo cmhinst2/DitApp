@@ -23,6 +23,9 @@ export const InterviewHistory = () => {
     isFetching.current = true; // 통신 시작 직전 true 설정
     setIsLoading(true);
     try {
+      console.log("pageNum : ", pageNum);
+      console.log("filter: ", filter);
+      console.log("order : ", order);
       const response = await axiosAPI.get(`/ai/interview/history/${loginMember.memberNo}`, {
         params: {
           page: pageNum,
@@ -31,7 +34,7 @@ export const InterviewHistory = () => {
         }
       });
       const newData = response.data;
-      console.log(newData);
+      console.log("응답 데이터:", newData);
 
       if (newData.length === 0) {
         setHasMore(false); // 더 이상 가져올 데이터 없음
@@ -47,13 +50,36 @@ export const InterviewHistory = () => {
     }
   }
 
+  // 정렬 및 필터 변경 시 초기화
+  useEffect(() => {
+    console.log('1. 필터 변경됨');
+    setInterviewList([]); // 기존 목록 비우기
+    setHasMore(true);    // 다시 데이터가 있다고 가정
+
+    if (page === 1) {  // 페이지가 실제로 1일때 고정값 1 전달하여 fetch
+      getInterviews(1);
+    } else {        // 페이지가 1이 아닐땐 변경하도록 예약
+      setPage(1);  // 페이지를 1로 초기화 (예약 - 바로 변경 X)
+    }
+    window.scrollTo(0, 0);
+  }, [order, filter]);   // 정렬이나 필터가 바뀌면 실행
+
+  // 페이지 번호(page)가 바뀔 때만 fetch 요청하는 로직
+  useEffect(() => {
+    if (page > 0) {
+      getInterviews(page);
+    }
+  }, [page]);
+
   // 관찰 로직
   useEffect(() => {
+    // 로딩 중이거나 더 가져올 게 없으면 관찰 중단
     if (!observerTarget.current || !hasMore || isLoading) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && !isLoading) {
+        // 한 번만 실행되도록 isLoading 조건 추가
+        if (entries[0].isIntersecting && !isLoading && hasMore) {
           setPage((prev) => prev + 1);
         }
       },
@@ -63,19 +89,12 @@ export const InterviewHistory = () => {
     observer.observe(observerTarget.current);
     return () => observer.disconnect(); // 언마운트 시 관찰 종료
 
-  }, [hasMore, isLoading, filter]);
+  }, [hasMore, isLoading, interviewList]);
 
-  // 페이지 번호가 바뀔 때마다 데이터 호출
-  useEffect(() => {
-    getInterviews(page);
-  }, [page]);
+  const removeEndTag = (text) => {
+    return text.replace('[END_INTERVIEW]', '').trim();
+  }
 
-  // 정렬 및 필터 변경 시 초기화
-  useEffect(() => {
-    setInterviewList([]); // 기존 목록 비우기
-    setHasMore(true);    // 다시 데이터가 있다고 가정
-    setPage(1);          // 페이지를 1로 초기화 (여기서 page가 바뀌면 getInterviews가 자동 실행됩니다)
-  }, [order, filter]);   // 정렬이나 필터가 바뀌면 실행
 
   if (isLoading && interviewList.length === 0) return <HistoryLoader />;
 
@@ -85,7 +104,7 @@ export const InterviewHistory = () => {
       <header className="mb-8 flex justify-between">
         <div>
           <h1 className="text-2xl font-bold text-slate-800">인터뷰 기록 조회</h1>
-          <p className="text-slate-500 text-sm mt-1">일주일 이내에 진행한 면접 목록과 피드백을 확인할 수 있습니다.</p>
+          <p className="text-slate-500 text-sm mt-1">일주일 이내에 진행한 인터뷰를 이어서 진행하거나 피드백을 확인할 수 있습니다.</p>
         </div>
         <div className="relative flex items-center">
           <select className="appearance-none w-full bg-white border border-slate-200 text-slate-700 text-sm rounded-xl px-4 py-2 pr-10 shadow-sm 
@@ -119,7 +138,7 @@ export const InterviewHistory = () => {
                 <span className="text-xs text-slate-400">{interview.createdAt}</span>
               </div>
               <h3 className="text-lg font-bold text-slate-800 group-hover:text-blue-600 transition-colors line-clamp-1">
-                {interview.lastMessage || "대화 내용이 없습니다."}
+                {removeEndTag(interview.lastMessage) || "대화 내용이 없습니다."}
               </h3>
             </div>
 
