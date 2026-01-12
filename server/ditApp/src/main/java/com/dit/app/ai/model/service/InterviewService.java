@@ -11,7 +11,7 @@ public interface InterviewService {
 	 * @param sessionId
 	 * @return
 	 */
-	List<InterviewMessage> loadInterview(String sessionId);
+	List<InterviewMessage> loadInterview(InterviewSessions sessionData);
 
 	/** 지난 인터뷰 기록 모두 조회
 	 * @param memberNo

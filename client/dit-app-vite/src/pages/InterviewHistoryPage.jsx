@@ -23,9 +23,6 @@ export const InterviewHistory = () => {
     isFetching.current = true; // 통신 시작 직전 true 설정
     setIsLoading(true);
     try {
-      console.log("pageNum : ", pageNum);
-      console.log("filter: ", filter);
-      console.log("order : ", order);
       const response = await axiosAPI.get(`/ai/interview/history/${loginMember.memberNo}`, {
         params: {
           page: pageNum,
@@ -92,7 +89,27 @@ export const InterviewHistory = () => {
   }, [hasMore, isLoading, interviewList]);
 
   const removeEndTag = (text) => {
+    if(text == null) return;
     return text.replace('[END_INTERVIEW]', '').trim();
+  }
+
+  // 인터뷰진행 페이지로 이동
+  const handleInterviewCard = (sId, position, stat) => {
+    let replacePosition;
+    if (position === '프론트엔드 개발자') {
+      replacePosition = 'frontend'
+    } else if (position === '백엔드 개발자 (Java)') {
+      replacePosition = 'backend'
+    } else { replacePosition = 'fullstack' };
+
+    const interviewStorageData = { 'currentSessionId': sId, 'position': replacePosition, 'end': (stat == 'N') ? false : true };
+    localStorage.setItem("interviewSession", JSON.stringify(interviewStorageData));
+    if(stat == 'N') {
+      location.href = "/interview";
+    } else {
+      location.href = "/interview/feedback"
+    }
+    
   }
 
 
@@ -127,6 +144,7 @@ export const InterviewHistory = () => {
         {interviewList.map((interview, index) => (
           <div
             key={interview.memberNo + index}
+            onClick={() => handleInterviewCard(interview.sessionId, interview.position, interview.status)}
             className="h-[100px] group flex items-center justify-between p-5 bg-white border border-slate-200 rounded-xl shadow-sm hover:border-blue-400 hover:shadow-md transition-all cursor-pointer"
           >
             <div className="flex flex-col gap-1 basis-4/5">
@@ -145,7 +163,7 @@ export const InterviewHistory = () => {
             <div className="flex items-center gap-4 basis-1/5">
               {/* 상태 배지 */}
               {interview.status === "Y" ?
-                <Badge title={"종료"} color={'red'} /> : <Badge title={"진행 중"} color={'green'} />
+                <Badge title="종료" color='red' /> : <Badge title="진행 중" color='green' />
               }
             </div>
           </div>

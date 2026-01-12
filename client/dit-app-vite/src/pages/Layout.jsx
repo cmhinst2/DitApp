@@ -8,6 +8,7 @@ import Main from "./MainPage";
 import ReviewPage from "./ReviewPage";
 import { InterviewHistory } from "./InterviewHistoryPage";
 import { ReviewHistory } from "./ReviewHistoryPage";
+import InterviewFeedback from "./InterviewFeedback";
 
 
 export default function Layout({isLogin, setIsLogin}) {
@@ -35,6 +36,7 @@ export default function Layout({isLogin, setIsLogin}) {
                     <Route path="/interview" element={<InterviewPage />} />
                     <Route path="/review" element={<ReviewPage />} />
                     <Route path="/interview/history" element={<InterviewHistory />} />
+                    <Route path="/interview/feedback" element={<InterviewFeedback />} />
                     <Route path="/review/history" element={<ReviewHistory />} />
                   </Routes>
                 </main>

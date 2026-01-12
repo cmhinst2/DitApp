@@ -24,8 +24,8 @@ public class InterviewServiceImpl implements InterviewService {
 
 	// 이전 면접 대화 불러오기
 	@Override
-	public List<InterviewMessage> loadInterview(String sessionId) {
-		return interviewMapper.selectAllMessageBySessionId(sessionId);
+	public List<InterviewMessage> loadInterview(InterviewSessions sessionData) {
+		return interviewMapper.selectAllMessageBySessionId(sessionData);
 	}
 
 	// 지난 인터뷰 기록 모두 조회
@@ -42,4 +42,6 @@ public class InterviewServiceImpl implements InterviewService {
 
 		return interviewMapper.selectInterviewHistory(paramMap);
 	}
+	
+	
 }

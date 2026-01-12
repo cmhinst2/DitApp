@@ -22,9 +22,10 @@
 		JOIN "INTERVIEW_SESSIONS" I_SES
 		ON
 		I_MSG.SESSION_ID = I_SES.SESSION_ID
-		WHERE I_MSG.SESSION_ID =
-		#{sessionId}
-		AND I_SES.STATUS = 'N'
+		WHERE I_MSG.SESSION_ID = #{sessionId}
+		<if test="status == 'N'">
+			AND I_SES.STATUS = 'N'
+		</if>
 		ORDER BY MESSAGE_ID
 	</select>
 
@@ -74,6 +75,21 @@
 			<otherwise> S.CREATED_AT DESC </otherwise>
 		</choose>
 		OFFSET #{offset} ROWS FETCH NEXT #{limit} ROWS ONLY
+	</select>
+	
+	<select id="checkAlreadyFeedback">
+		SELECT COUNT(*) FROM "INTERVIEW_FEEDBACK"
+		WHERE SESSION_ID = #{sessionId}
+	</select>
+	
+	<insert id="insertFeedback">
+		INSERT INTO "INTERVIEW_FEEDBACK"
+		VALUES(#{sessionId}, #{feedbackContent}, DEFAULT)
+	</insert>
+	
+	<select id="selectFeedback">
+		SELECT FEEDBACK_CONTENT FROM "INTERVIEW_FEEDBACK"
+		WHERE SESSION_ID = #{sessionId}
 	</select>
 
 </mapper>

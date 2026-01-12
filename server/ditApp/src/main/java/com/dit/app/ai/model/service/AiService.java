@@ -22,5 +22,11 @@ public interface AiService {
 	 */
 	InterviewMessage continueInterview(InterviewMessage interviewMessage) throws Exception ;
 
+	/** 지난 인터뷰 AI 피드백 받기
+	 * @param sessionData
+	 * @return
+	 */
+	Map<String, Object> feedBackInterview(InterviewSessions sessionData) throws Exception ;
+
 
 }

@@ -15,10 +15,16 @@ public interface InterviewMapper {
 
 	int insertInteviewMessage(InterviewMessage interviewMessage);
 
-	List<InterviewMessage> selectAllMessageBySessionId(String sessionId);
+	List<InterviewMessage> selectAllMessageBySessionId(InterviewSessions sessionData);
 
 	int completeInterviewSession(String memberSessionId);
 
 	List<InterviewSessions> selectInterviewHistory(Map<String, Object> params);
+
+	int insertFeedback(Map<String, Object> feedbackData);
+
+	int checkAlreadyFeedback(String sessionId);
+
+	String selectFeedback(String string);
 	
 }

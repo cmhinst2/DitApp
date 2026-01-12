@@ -36,7 +36,8 @@ export default function InterviewPage() {
     const checkSession = async () => {
       try {
         const savedSessionId = JSON.parse(localStorage.getItem("interviewSession"));
-
+        
+        // 종료된 인터뷰가 넘어왔을 때 피드백 AI 솔루션 호출
         if (savedSessionId && savedSessionId.currentSessionId) {
           await loadInterview(savedSessionId.currentSessionId);
         } else {

@@ -52,8 +52,8 @@ public class InterviewController {
 	// 기존 인터뷰 불러오기
 	@GetMapping("load/{sessionId}")
 	public List<InterviewMessage> loadInterviewHistory(@PathVariable("sessionId") String sessionId) {
-		// {sessionId : '', content: '', role : ''} 형태 List로 반환
-		return interviewService.loadInterview(sessionId);
+		InterviewSessions sessionData = InterviewSessions.builder().sessionId(sessionId).status("N").build();
+		return interviewService.loadInterview(sessionData);
 	}
 
 	// 지난 인터뷰 기록 모두 조회
@@ -61,6 +61,13 @@ public class InterviewController {
 	public List<InterviewSessions> selectAllInterviewHistory(@PathVariable("memberNo") String memberNo,
 			@RequestParam Map<String, Object> paramMap) {
 		return interviewService.selectInterviewHistory(memberNo, paramMap);
+	}
+	
+	// 지난 인터뷰 AI 피드백 받기
+	@GetMapping("feedback/{sessionId}")
+	public Map<String, Object> feedBackInterview(@PathVariable("sessionId") String sessionId) throws Exception {
+		InterviewSessions sessionData = InterviewSessions.builder().sessionId(sessionId).build();
+		return aiService.feedBackInterview(sessionData);
 	}
 
 }

@@ -70,9 +70,27 @@ export const MoreLoader = () => {
 }
 
 // 뱃지
-export const Badge = ({title, color}) => (
-  <div className={`ml-auto flex items-center gap-2 px-3 py-1.5 bg-${color}-50 text-${color}-700 border border-${color}-200 rounded-full`}>
-    <span className={title === '종료' ? `w-2 h-2 bg-${color}-500 rounded-full` : `w-2 h-2 bg-${color}-500 rounded-full animate-bounce`}></span>
-    <span className="text-xs font-bold">{title}</span>
-  </div>
-);
+export const Badge = ({ title, color }) => {
+
+  const colorMaps = {
+    red: {
+      container: "bg-red-50 text-red-700 border-red-200",
+      dot: "bg-red-500",
+    },
+    green: {
+      container: "bg-green-50 text-green-700 border-green-200",
+      dot: "bg-green-500",
+    },
+  };
+
+  const style = colorMaps[color] || colorMaps.green;
+
+  return (
+    <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border ml-auto ${style.container}`}>
+      <span
+        className={`w-2 h-2 rounded-full ${style.dot} ${title !== '종료' ? 'animate-bounce' : ''}`}
+      ></span>
+      <span className="text-xs font-bold">{title}</span>
+    </div>
+  )
+};
