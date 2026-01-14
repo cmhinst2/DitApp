@@ -31,7 +31,6 @@ export const InterviewHistory = () => {
         }
       });
       const newData = response.data;
-      console.log("응답 데이터:", newData);
 
       if (newData.length === 0) {
         setHasMore(false); // 더 이상 가져올 데이터 없음

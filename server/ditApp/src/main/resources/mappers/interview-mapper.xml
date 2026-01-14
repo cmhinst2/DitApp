@@ -23,7 +23,7 @@
 		ON
 		I_MSG.SESSION_ID = I_SES.SESSION_ID
 		WHERE I_MSG.SESSION_ID = #{sessionId}
-		<if test="status == 'N'">
+		<if test='status == "N"'>
 			AND I_SES.STATUS = 'N'
 		</if>
 		ORDER BY MESSAGE_ID

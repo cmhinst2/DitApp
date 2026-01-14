@@ -16,14 +16,21 @@ const InterviewFeedback = () => {
   const [position, setPosition] = useState(null);
   const bottomRef = useRef(null);
 
+  const scrollToBottom = () => {
+    bottomRef.current?.scrollIntoView({
+      behavior: "smooth", // 부드럽게 이동
+      block: "end"
+    });
+  };
+
   useEffect(() => {
-    if (bottomRef.current) {
-      const { scrollHeight, clientHeight } = bottomRef.current;
-      bottomRef.current.scrollTo({
-        top: scrollHeight - clientHeight
-      });
+    if (feedback) {
+      // 피드백 카드가 렌더링된 후 약간의 지연을 주어 정확히 바닥으로 이동
+      setTimeout(() => {
+        scrollToBottom();
+      }, 100);
     }
-  }, [messages]);
+  }, [feedback]);
 
   useEffect(() => {
     const fetchInterviewHistory = async () => {
@@ -65,7 +72,7 @@ const InterviewFeedback = () => {
         AI 모의면접 · {position}
       </h2>
 
-      <div ref={bottomRef} className="flex-1 overflow-y-auto space-y-4 p-4 bg-white rounded-xl border">
+      <div className="space-y-4 p-4 bg-white rounded-xl border shadow-sm">
         {messages.map((msg, idx) => (
           <Message key={idx} role={msg.role} content={msg.content} />
         ))}
@@ -110,6 +117,8 @@ const InterviewFeedback = () => {
           </div>
         </div>
       )}
+
+      <div ref={bottomRef} />
     </section>
   )
 }
